@@ -10,6 +10,7 @@ import UIKit
 
 class CardsContainer: UIView {
     
+    // buffer for doing shuffling 
     var playingCardViews = [PlayingCardView]()
     
     var dickFrame: CGRect?
