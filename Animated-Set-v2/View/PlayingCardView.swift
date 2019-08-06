@@ -7,7 +7,6 @@
 //
 
 import UIKit
-var i = 0
 
 class PlayingCardView: UIView {
     
@@ -30,7 +29,7 @@ class PlayingCardView: UIView {
         self.shadding = shadding
         self.color = color
         super.init(frame: frame)
-        self.backgroundColor = getRandomColor()
+        self.backgroundColor = .green
         self.clipsToBounds = true
 //        self.layer.borderWidth = 0.75
 //        self.layer.borderColor = getColorIdentity().cgColor

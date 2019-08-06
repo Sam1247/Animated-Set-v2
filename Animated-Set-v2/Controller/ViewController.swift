@@ -44,6 +44,13 @@ class SetViewController: UIViewController {
         initialSetup()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        cardsContainer.dickFrame = dealButton.frame
+    }
+    
+   
+    
     func setupButtons() {
         dealButton.layer.cornerRadius = 6
         cardsContainer.dickFrame = dealButton.frame
@@ -51,10 +58,24 @@ class SetViewController: UIViewController {
         cardsContainer.pileFrame = discardPileButton.frame
     }
     
+    fileprivate func setupCardView(_ card: Card?) {
+        let cardView = PlayingCardView(count: Count(rawValue: card!.varient3.rawValue)!, kind: Kind(rawValue: card!.varient2.rawValue)!, shadding: Shadding(rawValue: card!.varient4.rawValue)!, color: Color(rawValue: card!.varient1.rawValue)!, frame: CGRect())
+        cardView.center = dealButton.center
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(SetViewController.select(recognizer:)))
+        cardView.addGestureRecognizer(tapGestureRecognizer)
+        cardsContainer.playingCardViews.append(cardView)
+    }
+    
     func initialSetup() {
+        cardsContainer.animationState = .begining
         for _ in 0..<4 {
             deal3more()
         }
+        // updating views
+        for card in game.playingCards {
+            setupCardView(card)
+        }
+        cardsContainer.setNeedsDisplay()
     }
     
     @objc
@@ -75,17 +96,16 @@ class SetViewController: UIViewController {
             let startIndex = game.playingCards.count-3
             for index in startIndex..<game.playingCards.count {
                 let card = game.playingCards[index]
-                let cardView = PlayingCardView(count: Count(rawValue: card!.varient3.rawValue)!, kind: Kind(rawValue: card!.varient2.rawValue)!, shadding: Shadding(rawValue: card!.varient4.rawValue)!, color: Color(rawValue: card!.varient1.rawValue)!, frame: CGRect())
-                let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(SetViewController.select(recognizer:)))
-                cardView.addGestureRecognizer(tapGestureRecognizer)
-                cardsContainer.playingCardViews.append(cardView)
+                setupCardView(card)
             }
         }
         cardsContainer.setNeedsDisplay()
     }
     
     @IBAction func deal(_ sender: Any) {
+        cardsContainer.animationState = .dealing
         deal3more()
+        updateViewFromModel()
     }
     
     func deal3more() {
@@ -94,7 +114,6 @@ class SetViewController: UIViewController {
             return
         }
         game.dealMoreCards()
-        updateViewFromModel()
     }
     
     @objc
@@ -140,9 +159,9 @@ class SetViewController: UIViewController {
                             self.cardsContainer.playingCardViews.remove(at: index)
                         }
                     }
-                    if self.game.deck.count != 0 {
+                    if !self.game.deck.isEmpty {
+                        self.cardsContainer.animationState = .dealt
                         self.deal3more()
-                    } else {
                         self.updateViewFromModel()
                     }
                     
@@ -197,6 +216,7 @@ class SetViewController: UIViewController {
         switch recognizer.direction {
         case .down:
             deal3more()
+            updateViewFromModel()
         default:
             break
         }

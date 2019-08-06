@@ -13,18 +13,18 @@
         <!--Set View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="SetViewController" customModule="Animated_Set" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="SetViewController" customModule="Animated_Set_v2" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="k6d-TB-0U7" customClass="CardsContainer" customModule="Animated_Set" customModuleProvider="target">
+                            <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="k6d-TB-0U7" customClass="CardsContainer" customModule="Animated_Set_v2" customModuleProvider="target">
                                 <rect key="frame" x="16" y="28" width="343" height="528"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZcM-vQ-UYf">
                                 <rect key="frame" x="304" y="564" width="55" height="83"/>
-                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.0" green="0.97680455450000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="83" id="C9R-Rg-xdk"/>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="55" id="xa6-UG-dYs"/>
