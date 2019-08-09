@@ -10,6 +10,12 @@ import UIKit
 
 class PlayingCardView: UIView {
     
+    enum PlayingCardState {
+        case faceUp, facedown
+    }
+    
+    var playingCardState = PlayingCardState.facedown { didSet { setNeedsDisplay() } }
+    
     private var shapes = [UIView]()
     
     let count    : Count
@@ -20,6 +26,7 @@ class PlayingCardView: UIView {
     override var frame: CGRect {
         didSet {
             self.layer.cornerRadius = frame.height * Constants.cornerRadiusRatio
+            setNeedsDisplay()
         }
     }
     
@@ -31,12 +38,110 @@ class PlayingCardView: UIView {
         super.init(frame: frame)
         self.backgroundColor = .green
         self.clipsToBounds = true
-//        self.layer.borderWidth = 0.75
-//        self.layer.borderColor = getColorIdentity().cgColor
+        self.layer.borderWidth = 0.75
+        self.layer.borderColor = getColorIdentity().cgColor
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    fileprivate func drawFrame(_ frame: CGRect) {
+        var path: UIBezierPath
+        switch kind {
+        case .diamond:
+            path = UIBezierPath()
+            let beginingPoint = frame.origin.offsetBy(dx: 0, dy: (frame.height/2))
+            path.move(to: beginingPoint)
+            path.addLine(to: beginingPoint.offsetBy(dx: frame.width/2, dy: -(frame.height/2)))
+            path.addLine(to: beginingPoint.offsetBy(dx: frame.width, dy: 0))
+            path.addLine(to: beginingPoint.offsetBy(dx: frame.width/2, dy: (frame.height/2)))
+            path.close()
+        case .oval:
+            path = UIBezierPath(ovalIn: frame)
+        case .triangle:
+            path = UIBezierPath()
+            path.move(to: CGPoint(x: 0, y: frame.height))
+            path.addLine(to: CGPoint(x: frame.width/2, y: 0))
+            path.addLine(to: CGPoint(x: frame.width, y: frame.height))
+            path.close()
+        }
+        UIGraphicsGetCurrentContext()?.saveGState()
+        
+        path.lineWidth = frame.height * Constants.strokeRatio * 5
+        path.addClip()
+        
+        switch color {
+        case .green:
+            UIColor.green.setFill()
+            UIColor.green.setStroke()
+        case .purple:
+            UIColor.purple.setFill()
+            UIColor.purple.setStroke()
+        case .red:
+            UIColor.red.setFill()
+            UIColor.red.setStroke()
+        }
+        
+        switch shadding {
+        case .open:
+            path.stroke()
+        case .shaded:
+            path.fill()
+            alpha = 0.3
+        case .solid:
+            path.fill()
+        }
+        UIGraphicsGetCurrentContext()?.restoreGState()
+    }
+    
+    fileprivate func addPadding(_ frame: CGRect) -> CGRect {
+        let padding = frame.height * Constants.paddingRatio * 2.5
+        let newViewFrame = frame.inset(by: UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding))
+        return newViewFrame
+    }
+    
+    override func draw(_ rect: CGRect) {
+        switch playingCardState {
+        case .faceUp:
+            switch count {
+            case .one:
+                let frames = getFrames(count: 1)
+                for frame in frames {
+                    drawFrame(addPadding(frame))
+                }
+            case .two:
+                let frames = getFrames(count: 2)
+                for frame in frames {
+                    drawFrame(addPadding(frame))
+                }
+            case .three:
+                let frames = getFrames(count: 3)
+                for frame in frames {
+                    drawFrame(addPadding(frame))
+                }
+            }
+        case .facedown:
+            break
+        }
+    }
+    
+    private func getFrames(count: Int) -> [CGRect] {
+        var frames = [CGRect]()
+        switch count {
+        case 1:
+            frames.append(CGRect(x: 0, y: bounds.height/3, width: bounds.width, height: bounds.height/3))
+        case 2:
+            frames.append(CGRect(x: 0, y: bounds.height/6, width: bounds.width, height: bounds.height/3))
+            frames.append(CGRect(x: 0, y: bounds.height/3 + bounds.height/6, width: bounds.width, height: bounds.height/3))
+        case 3:
+            frames.append(CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height/3))
+            frames.append(CGRect(x: 0, y: bounds.height/3, width: bounds.width, height: bounds.height/3))
+            frames.append(CGRect(x: 0, y: (bounds.height*2)/3, width: bounds.width, height: bounds.height/3))
+        default:
+            break
+        }
+        return frames
     }
     
 //    override func draw(_ rect: CGRect) {
@@ -133,7 +238,7 @@ struct Constants {
     static let marginRatio: CGFloat = 0.0625
     static let strokeRatio: CGFloat = 0.01
     static let cornerRadiusRatio: CGFloat = 0.065
-    static let paddingRatio: CGFloat = 0.025
+    static let paddingRatio: CGFloat = 0.065
 }
 
 extension CGPoint {

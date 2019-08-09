@@ -10,6 +10,10 @@ import UIKit
 
 class SetViewController: UIViewController {
     
+    enum UpdateState {
+        case shuffled, appended
+    }
+    
     @IBOutlet weak var cardsContainer: CardsContainer! {
         didSet {
             let rotationGesture = UIRotationGestureRecognizer(target: self, action: #selector(shuffle(recognizer:)))
@@ -31,11 +35,9 @@ class SetViewController: UIViewController {
         }
     }
     
-    enum UpdateState {
-        case shuffled, appended
-    }
-    
     var updateState = UpdateState.appended
+    lazy var animator = UIDynamicAnimator(referenceView: view)
+    lazy var cardBehavior = CardBehavior(in: animator, pileFrame: discardPileButton.frame)
     
     
     override func viewDidLoad() {
@@ -139,37 +141,39 @@ class SetViewController: UIViewController {
     private func handleCorrectMatching() {
         for cardView in selectedPlayingCards {
             cardView.layer.borderColor = UIColor.cyan.cgColor
+            cardBehavior.addItem(cardView)
         }
+        selectedPlayingCards.removeAll()
+//        UIViewPropertyAnimator.runningPropertyAnimator(
+//            withDuration: 0.25,
+//            delay: 0,
+//            options: .curveEaseInOut,
+//            animations: {
+//                for cardView in self.selectedPlayingCards {
+//                    cardView.alpha = 0
+//                }
+//        },
+//            completion: { (position) in
+//                if position == .end {
+//                    for cardView in self.selectedPlayingCards {
+//                        cardView.removeFromSuperview()
+//                        // updating cardsContainer.playingCardViews buffer
+//                        if let index = self.cardsContainer.playingCardViews.firstIndex(of: cardView) {
+//                            self.cardsContainer.playingCardViews.remove(at: index)
+//                        }
+//                    }
+//                    if !self.game.deck.isEmpty {
+//                        self.cardsContainer.animationState = .dealt
+//                        self.deal3more()
+//                        self.updateViewFromModel()
+//                    }
+//
+//
+//                    // clearing selected cards
+//                    self.selectedPlayingCards.removeAll()
+//                }
+//        })
         
-        UIViewPropertyAnimator.runningPropertyAnimator(
-            withDuration: 0.25,
-            delay: 0,
-            options: .curveEaseInOut,
-            animations: {
-                for cardView in self.selectedPlayingCards {
-                    cardView.alpha = 0
-                }
-        },
-            completion: { (position) in
-                if position == .end {
-                    for cardView in self.selectedPlayingCards {
-                        cardView.removeFromSuperview()
-                        // updating cardsContainer.playingCardViews buffer
-                        if let index = self.cardsContainer.playingCardViews.firstIndex(of: cardView) {
-                            self.cardsContainer.playingCardViews.remove(at: index)
-                        }
-                    }
-                    if !self.game.deck.isEmpty {
-                        self.cardsContainer.animationState = .dealt
-                        self.deal3more()
-                        self.updateViewFromModel()
-                    }
-                    
-                    
-                    // clearing selected cards
-                    self.selectedPlayingCards.removeAll()
-                }
-        })
         
     }
     

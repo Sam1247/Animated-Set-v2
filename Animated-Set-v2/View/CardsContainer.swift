@@ -8,9 +8,11 @@
 
 import UIKit
 
-var i = 0
-
 class CardsContainer: UIView {
+    
+    enum AnimationState {
+        case begining, dealt, changingBounds, dealing
+    }
     
     // buffer for doing shuffling 
     var playingCardViews = [PlayingCardView]()
@@ -19,10 +21,6 @@ class CardsContainer: UIView {
     var pileFrame: CGRect?
     var animationState = AnimationState.begining
 
-    enum AnimationState {
-        case begining, dealt, changingBounds, dealing
-    }
-    
     fileprivate func gridSetup() {
         grid.cellCount = playingCardViews.count
         grid.frame = bounds
@@ -35,7 +33,7 @@ class CardsContainer: UIView {
         addSubview(playingCardViews[index])
     }
     
-    fileprivate func layoutNewsubviews(_ index: Int) {
+    fileprivate func layoutSubviewsRespectToGrid(_ index: Int) {
         if let viewFrame = grid[index] {
             let view = playingCardViews[index]
             let padding = viewFrame.height * Constants.paddingRatio
@@ -46,7 +44,7 @@ class CardsContainer: UIView {
                 options: [.allowUserInteraction],
                 animations: {
                     view.frame = newViewFrame
-            },
+                },
                 completion: nil)
             addSubview(view)
         }
@@ -63,15 +61,16 @@ class CardsContainer: UIView {
                     let newViewFrame = viewFrame.inset(by: UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding))
                     self.playingCardViews[index].frame = newViewFrame
                 }
-        },
+            },
             completion: { position in
                 UIView.transition(
                     with: self.playingCardViews[index],
-                    duration: 0.75,
+                    duration: 0.3,
                     options: .transitionFlipFromLeft,
                     animations: {
-                        self.playingCardViews[index].backgroundColor = .blue
-                },
+                        self.playingCardViews[index].playingCardState = .faceUp
+                        self.playingCardViews[index].backgroundColor = .white
+                    },
                     completion: nil
                 )
             }
@@ -94,7 +93,7 @@ class CardsContainer: UIView {
         case .changingBounds:
             // layout
             for index in 0..<grid.cellCount {
-                layoutNewsubviews(index)
+                layoutSubviewsRespectToGrid(index)
             }
             
         case .dealing, .dealt:
@@ -104,7 +103,7 @@ class CardsContainer: UIView {
             }
             // layout
             for index in 0..<grid.cellCount-3 {
-                 layoutNewsubviews(index)
+                 layoutSubviewsRespectToGrid(index)
             }
             // animating
             var delayFactor = 0

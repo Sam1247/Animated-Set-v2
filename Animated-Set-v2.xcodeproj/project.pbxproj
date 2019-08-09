@@ -18,6 +18,7 @@
 		203035D722F62F2200307AB5 /* ShapeVarients.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203035D222F62F2200307AB5 /* ShapeVarients.swift */; };
 		203035D822F62F2200307AB5 /* PlayingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203035D322F62F2200307AB5 /* PlayingCardView.swift */; };
 		203035DA22F630FA00307AB5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 203035D922F630FA00307AB5 /* Main.storyboard */; };
+		2047AE0222FA5AD30029A740 /* CardBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2047AE0122FA5AD30029A740 /* CardBehavior.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		203035D222F62F2200307AB5 /* ShapeVarients.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeVarients.swift; sourceTree = "<group>"; };
 		203035D322F62F2200307AB5 /* PlayingCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayingCardView.swift; sourceTree = "<group>"; };
 		203035D922F630FA00307AB5 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		2047AE0122FA5AD30029A740 /* CardBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardBehavior.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +110,7 @@
 			children = (
 				203035D022F62F2200307AB5 /* CardsContainer.swift */,
 				203035D322F62F2200307AB5 /* PlayingCardView.swift */,
+				2047AE0122FA5AD30029A740 /* CardBehavior.swift */,
 				203035D122F62F2200307AB5 /* Grid.swift */,
 				203035D222F62F2200307AB5 /* ShapeVarients.swift */,
 			);
@@ -187,6 +190,7 @@
 			files = (
 				203035D822F62F2200307AB5 /* PlayingCardView.swift in Sources */,
 				203035CC22F62F0400307AB5 /* Set.swift in Sources */,
+				2047AE0222FA5AD30029A740 /* CardBehavior.swift in Sources */,
 				203035B222F62E2300307AB5 /* ViewController.swift in Sources */,
 				203035D722F62F2200307AB5 /* ShapeVarients.swift in Sources */,
 				203035CB22F62F0400307AB5 /* Card.swift in Sources */,
