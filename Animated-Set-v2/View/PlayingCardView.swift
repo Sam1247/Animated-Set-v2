@@ -61,13 +61,13 @@ class PlayingCardView: UIView {
             path = UIBezierPath(ovalIn: frame)
         case .triangle:
             path = UIBezierPath()
-            path.move(to: CGPoint(x: 0, y: frame.height))
-            path.addLine(to: CGPoint(x: frame.width/2, y: 0))
-            path.addLine(to: CGPoint(x: frame.width, y: frame.height))
+            let beginingPoint = frame.origin.offsetBy(dx: frame.width/2, dy: 0)
+            path.move(to: beginingPoint)
+            path.addLine(to: beginingPoint.offsetBy(dx: frame.width/2, dy: (frame.height)))
+            path.addLine(to: beginingPoint.offsetBy(dx: -frame.width/2, dy: (frame.height)))
             path.close()
         }
         UIGraphicsGetCurrentContext()?.saveGState()
-        
         path.lineWidth = frame.height * Constants.strokeRatio * 5
         path.addClip()
         
@@ -82,7 +82,6 @@ class PlayingCardView: UIView {
             UIColor.red.setFill()
             UIColor.red.setStroke()
         }
-        
         switch shadding {
         case .open:
             path.stroke()

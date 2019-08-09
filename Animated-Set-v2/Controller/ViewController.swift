@@ -107,6 +107,9 @@ class SetViewController: UIViewController {
     @IBAction func deal(_ sender: Any) {
         cardsContainer.animationState = .dealing
         deal3more()
+        if dealButton.isEnabled == false {
+            return
+        }
         updateViewFromModel()
     }
     

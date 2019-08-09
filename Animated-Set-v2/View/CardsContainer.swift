@@ -52,7 +52,7 @@ class CardsContainer: UIView {
     
     fileprivate func deal3moreAnimation(_ index: Int, with delayFactor: Double) {
         UIViewPropertyAnimator.runningPropertyAnimator(
-            withDuration: 0.75,
+            withDuration: 0.5,
             delay: 0.375 * Double(delayFactor),
             options: .curveEaseInOut,
             animations: {
