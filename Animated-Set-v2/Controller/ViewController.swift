@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SetViewController: UIViewController {
+class SetViewController: UIViewController, UIDynamicAnimatorDelegate {
     
     enum UpdateState {
         case shuffled, appended
@@ -37,11 +37,12 @@ class SetViewController: UIViewController {
     
     var updateState = UpdateState.appended
     lazy var animator = UIDynamicAnimator(referenceView: view)
-    lazy var cardBehavior = CardBehavior(in: animator, pileFrame: discardPileButton.frame)
+    lazy var cardBehavior = CardBehavior(in: animator, pileFrame: view.convert(discardPileButton.frame, to: cardsContainer))
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        animator.delegate = self
         setupButtons()
         initialSetup()
     }
@@ -141,43 +142,53 @@ class SetViewController: UIViewController {
         game.isMatched(card1, card2, card3) ? handleCorrectMatching() : handleWrongMatching()
     }
     
+    private func addSnapBehavior(item: UIDynamicItem) {
+        let snap = UISnapBehavior(item: item, snapTo: discardPileButton.center)
+        snap.damping = 0.5
+        snap.action = {
+            item.transform = CGAffineTransform.identity
+        }
+        animator.addBehavior(snap)
+    }
+    
+    func dynamicAnimatorDidPause(_ animator: UIDynamicAnimator) {
+        for cardView in self.selectedPlayingCards {
+            cardView.removeFromSuperview()
+            // updating cardsContainer.playingCardViews buffer
+            if let index = self.cardsContainer.playingCardViews.firstIndex(of: cardView) {
+                self.cardsContainer.playingCardViews.remove(at: index)
+            }
+        }
+        if !self.game.deck.isEmpty {
+            self.cardsContainer.animationState = .dealt
+            self.deal3more()
+            self.updateViewFromModel()
+        }
+        selectedPlayingCards.removeAll()
+    }
+    
     private func handleCorrectMatching() {
         for cardView in selectedPlayingCards {
             cardView.layer.borderColor = UIColor.cyan.cgColor
             cardBehavior.addItem(cardView)
+            Timer.scheduledTimer(
+                withTimeInterval: 1,
+                repeats: false) { (timer) in
+                    self.selectedPlayingCards.forEach({ (cardView) in
+                        self.cardBehavior.removeItem(cardView)
+                        self.addSnapBehavior(item: cardView)
+                        UIViewPropertyAnimator.runningPropertyAnimator(
+                            withDuration: 0.5,
+                            delay: 0,
+                            options: [],
+                            animations: {
+                                self.selectedPlayingCards.forEach{
+                                    $0.bounds.size = self.discardPileButton.frame.size
+                                }},
+                            completion: nil)
+                    })
+            }
         }
-        selectedPlayingCards.removeAll()
-//        UIViewPropertyAnimator.runningPropertyAnimator(
-//            withDuration: 0.25,
-//            delay: 0,
-//            options: .curveEaseInOut,
-//            animations: {
-//                for cardView in self.selectedPlayingCards {
-//                    cardView.alpha = 0
-//                }
-//        },
-//            completion: { (position) in
-//                if position == .end {
-//                    for cardView in self.selectedPlayingCards {
-//                        cardView.removeFromSuperview()
-//                        // updating cardsContainer.playingCardViews buffer
-//                        if let index = self.cardsContainer.playingCardViews.firstIndex(of: cardView) {
-//                            self.cardsContainer.playingCardViews.remove(at: index)
-//                        }
-//                    }
-//                    if !self.game.deck.isEmpty {
-//                        self.cardsContainer.animationState = .dealt
-//                        self.deal3more()
-//                        self.updateViewFromModel()
-//                    }
-//
-//
-//                    // clearing selected cards
-//                    self.selectedPlayingCards.removeAll()
-//                }
-//        })
-        
-        
     }
     
     private func handleWrongMatching() {

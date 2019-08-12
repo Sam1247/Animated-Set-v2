@@ -35,22 +35,22 @@ class CardBehavior: UIDynamicBehavior {
         addChildBehavior(push)
     }
     
-    private func snap(_ item: UIView) {
-        let snap = UISnapBehavior(item: item, snapTo:CGPoint(x: pileFrame!.origin.x + 24, y: pileFrame!.origin.y + 24))
-        snap.damping = 0.5
-        addChildBehavior(snap)
-    }
+//    private func snap(_ item: UIView) {
+//        let snap = UISnapBehavior(item: item, snapTo:CGPoint(x: pileFrame!.origin.x + pileFrame!.width/2 , y: pileFrame!.origin.y + pileFrame!.height/2))
+//        snap.damping = 0.5
+//        addChildBehavior(snap)
+//    }
     
     func addItem(_ item: UIView) {
         collisionBehavior.addItem(item)
         itemBehavior.addItem(item)
         push(item)
-        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { (timer) in
-            self.snap(item)
-            self.itemBehavior.removeItem(item)
-            self.collisionBehavior.removeItem(item)
-            item.frame.size = self.pileFrame!.size
-        }
+//        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { (timer) in
+//            self.snap(item)
+//            self.itemBehavior.removeItem(item)
+//            self.collisionBehavior.removeItem(item)
+//            item.frame.size = self.pileFrame!.size
+//        }
     }
     
     func removeItem(_ item: UIView) {
